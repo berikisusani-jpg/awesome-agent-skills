@@ -12,19 +12,20 @@ class AgentManager:
             "task": TaskAgent()
         }
 
-    def run_swarm(self, goal: str):
+    def run_deep_research(self, topic):
         """
-        Orchestrates multiple agents to achieve a complex goal.
+        Deep research swarm: Research -> Writing
         """
-        print(f"Initializing swarm for goal: {goal}")
+        research_data = self.agents["research"].perform_deep_search(topic)
+        final_report = self.agents["writing"].format_research_report(research_data)
+        return final_report
 
-        # 1. Task agent breaks down the goal
+    def run_swarm(self, goal: str):
+        print(f"Initializing swarm for goal: {goal}")
         steps = self.agents["task"].break_down_task(goal)
         results = []
 
-        # 2. Iterate through steps and assign to the correct agent
         for step in steps:
-            print(f"Processing step: {step}")
             if "research" in step.lower():
                 results.append(self.agents["research"].search_and_summarize(step))
             elif "code" in step.lower() or "script" in step.lower():
@@ -34,11 +35,13 @@ class AgentManager:
             else:
                 results.append(self.agents["task"].execute_task(step))
 
-        # 3. Final synthesis
-        final_report = self.agents["writing"].write_document(f"Final outcome for: {goal}. Steps completed: {len(results)}")
-        return final_report
+        return results
 
     def run_task(self, agent_type: str, prompt: str):
         if agent_type in self.agents:
-            return getattr(self.agents[agent_type], "execute_task" if agent_type == "task" else "search_and_summarize" if agent_type == "research" else "write_code" if agent_type == "coding" else "write_document")(prompt)
+            agent = self.agents[agent_type]
+            if agent_type == "research": return agent.search_and_summarize(prompt)
+            if agent_type == "writing": return agent.write_document(prompt)
+            if agent_type == "coding": return agent.write_code(prompt)
+            if agent_type == "task": return agent.execute_task(prompt)
         return "Unknown agent type."
