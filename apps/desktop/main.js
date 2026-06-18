@@ -15,7 +15,7 @@ function createWindow() {
     alwaysOnTop: true
   });
 
-  mainWindow.loadFile('renderer/index.html');
+  mainWindow.loadFile('renderer/hud.html');
 }
 
 app.whenReady().then(() => {
