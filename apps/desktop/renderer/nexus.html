@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FRIDAY - NEXUS CINEMA MODE</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0;
+            background: #020205;
+            color: #fff;
+            font-family: 'Space Mono', monospace;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .nexus-viewport {
+            position: relative;
+            width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            perspective: 1000px;
+        }
+        .nexus-core {
+            position: relative;
+            width: 600px; height: 600px;
+            transform-style: preserve-3d;
+            animation: rotate-nexus 20s infinite linear;
+        }
+        @keyframes rotate-nexus {
+            0% { transform: rotateY(0deg) rotateX(0deg); }
+            100% { transform: rotateY(360deg) rotateX(360deg); }
+        }
+        .core-sphere {
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.4) 0%, transparent 70%);
+            box-shadow: 0 0 150px rgba(6, 182, 212, 0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(124, 58, 237, 0.1);
+        }
+        .cinema-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 100;
+            display: flex; flex-direction: column;
+            justify-content: space-between;
+            padding: 50px;
+            pointer-events: none;
+        }
+        .top-bar {
+            display: flex; justify-content: space-between;
+            font-size: 12px; letter-spacing: 5px;
+            color: rgba(6, 182, 212, 0.6);
+            border-top: 1px solid rgba(6, 182, 212, 0.2);
+            padding-top: 20px;
+        }
+        .bottom-bar {
+            display: flex; justify-content: center;
+            border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+            padding-bottom: 20px;
+        }
+        .nexus-label {
+            font-size: 32px; font-weight: 100;
+            text-shadow: 0 0 30px #7C3AED;
+            background: linear-gradient(to right, #7C3AED, #06B6D4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .noise-texture {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.05;
+            background-image: url('https://media.giphy.com/media/oEI9uWUPr9WUM/giphy.gif');
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="noise-texture"></div>
+    <div class="nexus-viewport">
+        <div class="nexus-core">
+            <div class="core-sphere" style="transform: rotateX(45deg)"></div>
+            <div class="core-sphere" style="transform: rotateY(45deg)"></div>
+            <div class="core-sphere" style="transform: rotateZ(45deg)"></div>
+        </div>
+    </div>
+    <div class="cinema-overlay">
+        <div class="top-bar">
+            <span>UPLINK STABLE</span>
+            <span>CINEMATIC RENDER V3</span>
+            <span>STITCH AI SYNC: 100%</span>
+        </div>
+        <div class="bottom-bar">
+            <span class="nexus-label">N E X U S</span>
+        </div>
+    </div>
+</body>
+</html>
