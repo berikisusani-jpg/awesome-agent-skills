@@ -2,50 +2,34 @@ import anthropic
 import asyncio
 import logging
 from typing import List, Dict, Any, AsyncGenerator
-from config.settings import ANTHROPIC_API_KEY
+from config.settings import ANTHROPIC_API_KEY, GEMINI_API_KEY
 from config.friday_identity import get_system_prompt
+from core.gemini_brain import GeminiBrain
 
 class FridayBrain:
     def __init__(self):
-        self.client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
-        self.model = "claude-3-opus-20240229"
+        self.claude_client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
+        self.gemini_brain = GeminiBrain(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
+        self.claude_model = "claude-3-opus-20240229"
         self.logger = logging.getLogger("FridayBrain")
         self.conversation_history = []
-        self.tools = [
-            {
-                "name": "get_weather",
-                "description": "Get the current weather for a location",
-                "input_schema": {
-                    "type": "object",
-                    "properties": {
-                        "location": {"type": "string", "description": "The city name"}
-                    },
-                    "required": ["location"]
-                }
-            },
-            {
-                "name": "search_web",
-                "description": "Search the web for information",
-                "input_schema": {
-                    "type": "object",
-                    "properties": {
-                        "query": {"type": "string", "description": "The search query"}
-                    },
-                    "required": ["query"]
-                }
-            }
-        ]
 
-    async def chat_stream(self, message: str, user_name: str = "User") -> AsyncGenerator[str, None]:
+    async def chat_stream(self, message: str, user_name: str = "User", force_gemini=False) -> AsyncGenerator[str, None]:
+        # Intelligent routing
+        if force_gemini or (len(message) > 5000 and self.gemini_brain):
+            self.logger.info("Routing to Gemini for long context.")
+            async for chunk in self.gemini_brain.chat_stream(message):
+                yield chunk
+            return
+
         system_prompt = get_system_prompt(user_name)
         self.conversation_history.append({"role": "user", "content": message})
 
         try:
-            async with self.client.messages.stream(
-                model=self.model,
+            async with self.claude_client.messages.stream(
+                model=self.claude_model,
                 max_tokens=2048,
                 system=system_prompt,
-                tools=self.tools,
                 messages=self.conversation_history
             ) as stream:
                 full_response = ""
@@ -58,4 +42,12 @@ class FridayBrain:
                 self.conversation_history.append({"role": "assistant", "content": full_response})
         except Exception as e:
             self.logger.error(f"Error in FridayBrain: {e}")
-            yield f"I'm sorry, I've hit a bit of a snag. Error: {str(e)}"
+            if self.gemini_brain:
+                self.logger.info("Falling back to Gemini.")
+                async for chunk in self.gemini_brain.chat_stream(message):
+                    yield chunk
+            else:
+                yield f"System error. Both brains offline. {str(e)}"
+
+    def clear_context(self):
+        self.conversation_history = []
