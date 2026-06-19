@@ -15,7 +15,7 @@ function createWindow() {
     alwaysOnTop: true
   });
 
-  mainWindow.loadFile('renderer/aether.html');
+  mainWindow.loadFile('renderer/nexus.html');
 }
 
 app.whenReady().then(() => {
