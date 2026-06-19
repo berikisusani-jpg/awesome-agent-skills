@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FRIDAY - AETHER HYPER-UI</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0;
+            background: radial-gradient(circle at center, #0a0a1a, #000);
+            color: #fff;
+            font-family: 'Space Mono', monospace;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .aether-core {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px; height: 500px;
+            border-radius: 50%;
+            background: rgba(124, 58, 237, 0.1);
+            box-shadow: 0 0 100px rgba(124, 58, 237, 0.3);
+            display: flex; justify-content: center; align-items: center;
+        }
+        .fluid-blob {
+            width: 350px; height: 350px;
+            background: linear-gradient(45deg, #7C3AED, #06B6D4, #F472B6);
+            background-size: 200% 200%;
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            filter: blur(40px);
+            animation: move-blob 10s infinite ease-in-out, bg-shift 5s infinite linear;
+            opacity: 0.8;
+        }
+        @keyframes move-blob {
+            0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: scale(1) rotate(0deg); }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: scale(1.1) rotate(180deg); }
+            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: scale(1) rotate(360deg); }
+        }
+        @keyframes bg-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .data-stream {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .particle {
+            position: absolute;
+            width: 2px; height: 2px;
+            background: #06B6D4;
+            border-radius: 50%;
+            animation: float 5s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(2); opacity: 0; }
+        }
+        .status-overlay {
+            position: absolute;
+            bottom: 40px; left: 40px;
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: #06B6D4;
+            text-transform: uppercase;
+        }
+        .apex-label {
+            position: absolute;
+            top: 40px; right: 40px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #7C3AED;
+            text-shadow: 0 0 20px #7C3AED;
+        }
+    </style>
+</head>
+<body>
+    <div class="apex-label">FRIDAY APEX</div>
+    <div class="aether-core">
+        <div class="fluid-blob"></div>
+    </div>
+    <div class="data-stream" id="stream"></div>
+    <div class="status-overlay">
+        > OMNISCIENT VISION: ONLINE<br>
+        > SWAT TACTICAL: READY<br>
+        > NEURAL CONTINUUM: STABLE<br>
+        > APEX PROTOCOL: ACTIVE
+    </div>
+    <script>
+        const stream = document.getElementById('stream');
+        for(let i=0; i<50; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.animationDelay = Math.random() * 5 + 's';
+            stream.appendChild(p);
+        }
+    </script>
+</body>
+</html>

@@ -15,7 +15,7 @@ function createWindow() {
     alwaysOnTop: true
   });
 
-  mainWindow.loadFile('renderer/god_mode.html');
+  mainWindow.loadFile('renderer/aether.html');
 }
 
 app.whenReady().then(() => {
