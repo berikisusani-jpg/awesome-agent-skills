@@ -1,6 +1,11 @@
-skills
-skills/downloads/
-scripts/__pycache__/
-scripts/download-skills.py
-.DS_Store
-.claude/
+__pycache__/
+*.pyc
+node_modules/
+dist/
+build/
+*.log
+.env
+.venv
+*.png
+*.wav
+verification/

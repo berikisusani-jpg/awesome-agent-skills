@@ -15,7 +15,7 @@ function createWindow() {
     alwaysOnTop: true
   });
 
-  mainWindow.loadFile('renderer/hud.html');
+  mainWindow.loadFile('renderer/god_mode.html');
 }
 
 app.whenReady().then(() => {
