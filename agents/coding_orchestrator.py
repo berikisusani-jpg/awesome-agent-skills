@@ -6,24 +6,27 @@ class CodingOrchestrator:
         self.brain = brain
         self.coder = CodingAgent()
 
-    async def plan_project(self, description):
-        prompt = f"Create a multi-file architecture plan for the following project: {description}. Output as a list of files with their purposes."
-        plan = ""
-        async for chunk in self.brain.chat_stream(prompt):
-            plan += chunk
-        return plan
+    async def build_project(self, description, target_dir="generated_project"):
+        print(f"Friday: Building project in {target_dir}...")
 
-    async def build_project(self, description):
-        print(f"Friday: Building complex project - {description}")
-        plan = await self.plan_project(description)
-        # Logic to iterate through plan and generate each file
-        files = ["main.py", "utils.py", "models.py"] # Simplified for now
-        results = []
-        for file in files:
-            code = self.coder.write_code(f"Write the code for {file} based on this plan: {plan}")
-            results.append(f"Generated {file}")
-            # In a real scenario, we would write these to disk
-        return "\n".join(results)
+        # Ensure target dir is safe (simplified Part 4 check here)
+        if ".." in target_dir or target_dir.startswith("/"):
+             return {"status": "error", "message": "Invalid target directory."}
 
-    def debug_complex_issue(self, error_log, code_snippet):
-        return self.coder.debug_code(f"Error: {error_log}\nCode: {code_snippet}")
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
+
+        plan_prompt = f"Plan a project: {description}. List files needed."
+        plan_text = ""
+        async for chunk in self.brain.chat_stream(plan_prompt):
+            plan_text += chunk
+
+        # Real implementation would parse plan and call coder for each file
+        # Here we demonstrate writing one file as proof of implementation
+        code = await self.coder.write_code(f"Write the main.py for {description}")
+
+        file_path = os.path.join(target_dir, "main.py")
+        with open(file_path, "w") as f:
+            f.write(code)
+
+        return f"Project build sequence initiated. main.py written to {target_dir}."

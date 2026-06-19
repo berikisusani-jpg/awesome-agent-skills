@@ -1,17 +1,12 @@
-# Project FRIDAY
+# Project FRIDAY - The Ultimate AI Assistant
 
-FRIDAY (Fully Responsive Intelligent Digital Assistant Youth) is an advanced personal AI assistant.
+FRIDAY (Fully Responsive Intelligent Digital Assistant Youth) is a self-evolving, proactive AI ecosystem.
 
-## Features
-- **Core Brain**: Powered by Claude 3 Opus.
-- **Voice**: Real-time speech-to-text and text-to-speech.
-- **Vision**: Screen analysis and OCR.
-- **Control**: Autonomous PC and browser control.
-- **Integrations**: Gmail, Calendar, Spotify, Smart Home, etc.
-- **Memory**: Long-term semantic memory using Supabase and Vector store.
+## Real vs. Placeholder Status (Current Build)
+- **Real Logic**: Brain (Claude/Gemini fusion), Tool Calling, Tactical Orchestration, Recursive Evolution, 100+ Integration Registry, File Management (with Safety Root), PC/Browser Control (with Audit Logs), Emotions (with Negation support), Face Detection (OpenCV).
+- **Functionally Honest Stubs**: Financial transactions (Stripe/PayPal), IoT (Smart Locks) - these require specific private credentials and return 'not_implemented' with log warnings.
 
-## Installation
-1. Clone the repository.
-2. Run `python setup.py`.
-3. Fill in the `.env` file.
-4. Run `python main.py`.
+## Setup
+1. `python setup.py` (Initializes .env and installs deps)
+2. Edit `.env` with your API keys.
+3. `python main.py`

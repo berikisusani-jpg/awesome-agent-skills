@@ -5,7 +5,7 @@ export default function Home() {
   const [resp, setResp] = useState("");
 
   const askFriday = async () => {
-    const r = await fetch("http://localhost:3000/api/chat", {
+    const r = await fetch("http://localhost:8000/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: msg })

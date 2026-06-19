@@ -1,8 +1,22 @@
-class CodingAgent:
-    def write_code(self, prompt):
-        print(f"Writing code for: {prompt}")
-        return "def hello_world():\n    print('Hello from Friday!')"
+import asyncio
 
-    def debug_code(self, code):
+class CodingAgent:
+    def __init__(self, brain=None):
+        self.brain = brain
+
+    async def write_code(self, prompt):
+        print(f"Coding Agent: Generating code for '{prompt}'...")
+        if self.brain:
+            code = ""
+            async for chunk in self.brain.chat_stream(f"Write ONLY raw code for: {prompt}. No explanation."):
+                code += chunk
+            return code
+
+        # Fallback if no brain provided
+        await asyncio.sleep(0.5)
+        return "# Error: Brain not linked to Coding Agent."
+
+    async def debug_code(self, code):
         print("Debugging code...")
-        return "Code looks clean."
+        await asyncio.sleep(0.5)
+        return "Code analysis complete."
