@@ -4,29 +4,47 @@ from agents.coding_agent import CodingAgent
 class CodingOrchestrator:
     def __init__(self, brain):
         self.brain = brain
-        self.coder = CodingAgent()
+        # FIXED: Pass brain to CodingAgent
+        self.coder = CodingAgent(brain=self.brain)
+
+    async def plan_project(self, description):
+        prompt = f"Create a multi-file architecture plan for the following project: {description}. Output as a list of files with their purposes."
+        plan = ""
+        async for chunk in self.brain.chat_stream(prompt):
+            plan += chunk
+        return plan
 
     async def build_project(self, description, target_dir="generated_project"):
-        print(f"Friday: Building project in {target_dir}...")
+        print(f"Friday: Building complex project - {description}")
+        plan_text = await self.plan_project(description)
 
-        # Ensure target dir is safe (simplified Part 4 check here)
-        if ".." in target_dir or target_dir.startswith("/"):
-             return {"status": "error", "message": "Invalid target directory."}
+        # Ensure target dir is safe
+        from control.file_manager import FileManager
+        fm = FileManager()
+        try:
+            safe_target = fm._safe_path(target_dir)
+        except PermissionError:
+            return {"status": "error", "message": "Invalid target directory."}
 
-        if not os.path.exists(target_dir):
-            os.makedirs(target_dir)
+        if not os.path.exists(safe_target):
+            os.makedirs(safe_target)
 
-        plan_prompt = f"Plan a project: {description}. List files needed."
-        plan_text = ""
-        async for chunk in self.brain.chat_stream(plan_prompt):
-            plan_text += chunk
+        # Parse plan for filenames (very basic parser for this demo)
+        import re
+        files = re.findall(r'[\w\.-]+\.py', plan_text)
+        if not files:
+            files = ["main.py"] # Fallback
 
-        # Real implementation would parse plan and call coder for each file
-        # Here we demonstrate writing one file as proof of implementation
-        code = await self.coder.write_code(f"Write the main.py for {description}")
+        results = []
+        for file_name in set(files):
+            file_path = os.path.join(safe_target, file_name)
+            # Link each file build to the actual coder using the brain
+            code = await self.coder.write_code(f"Write the code for {file_name} based on this project plan: {plan_text}")
+            with open(file_path, "w") as f:
+                f.write(code)
+            results.append(f"Generated {file_name}")
 
-        file_path = os.path.join(target_dir, "main.py")
-        with open(file_path, "w") as f:
-            f.write(code)
+        return f"Project build complete. Files written to {target_dir}: {', '.join(results)}"
 
-        return f"Project build sequence initiated. main.py written to {target_dir}."
+    async def debug_complex_issue(self, error_log, code_snippet):
+        return await self.coder.debug_code(f"Error: {error_log}\nCode: {code_snippet}")

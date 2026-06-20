@@ -23,10 +23,28 @@ class SpotifyIntegration:
             return {"status": "not_implemented", "message": "Spotify credentials not configured or auth failed."}
 
         try:
-            # self.sp.start_playback()
-            return f"Spotify: Playing {track_name if track_name else 'your music'}"
+            # FIXED: Real call logic
+            if track_name:
+                results = self.sp.search(q=track_name, type='track', limit=1)
+                if results['tracks']['items']:
+                    track_uri = results['tracks']['items'][0]['uri']
+                    self.sp.start_playback(uris=[track_uri])
+                    return f"Spotify: Playing {track_name}"
+                return {"status": "error", "message": f"Track {track_name} not found."}
+            else:
+                self.sp.start_playback()
+                return "Spotify: Resuming playback."
         except Exception as e:
+            logging.error(f"Spotify play failed: {e}")
             return {"status": "error", "message": str(e)}
 
     def pause_music(self):
-        return "Spotify paused (Simulated API call)"
+        if not self.sp:
+            return {"status": "not_implemented", "message": "Spotify credentials not configured."}
+        try:
+            # FIXED: Real call logic
+            self.sp.pause_playback()
+            return "Spotify paused."
+        except Exception as e:
+            logging.error(f"Spotify pause failed: {e}")
+            return {"status": "error", "message": str(e)}

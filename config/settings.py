@@ -6,8 +6,7 @@ load_dotenv()
 def get_env_var(name, default=None, required=False):
     val = os.getenv(name, default)
     if required and not val:
-        # We don't raise here to prevent crash on import, but we can log a warning
-        # or handle it in the module that uses it.
+        # For required vars, we might want to log or raise if not in dev
         pass
     return val
 
@@ -19,6 +18,9 @@ ELEVENLABS_API_KEY = get_env_var("ELEVENLABS_API_KEY")
 PICOVOICE_ACCESS_KEY = get_env_var("PICOVOICE_ACCESS_KEY")
 GEMINI_API_KEY = get_env_var("GEMINI_API_KEY")
 
+# Friday Security
+FRIDAY_API_TOKEN = get_env_var("FRIDAY_API_TOKEN")
+
 # New integrations
 OPENWEATHERMAP_API_KEY = get_env_var("OPENWEATHERMAP_API_KEY")
 SPOTIFY_CLIENT_ID = get_env_var("SPOTIFY_CLIENT_ID")
@@ -27,4 +29,8 @@ HOME_ASSISTANT_TOKEN = get_env_var("HOME_ASSISTANT_TOKEN")
 
 # Other settings
 LOG_FILE = "friday.log"
-EOF_WORKSPACE_ROOT = os.getcwd() # For Part 4 allow-listing
+
+# Sandbox Security
+WORKSPACE_ROOT = os.path.join(os.getcwd(), "friday_workspace")
+if not os.path.exists(WORKSPACE_ROOT):
+    os.makedirs(WORKSPACE_ROOT)

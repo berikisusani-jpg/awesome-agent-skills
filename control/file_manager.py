@@ -1,15 +1,18 @@
 import os
 import shutil
 import logging
-from config.settings import EOF_WORKSPACE_ROOT
+from config.settings import WORKSPACE_ROOT
 
 class FileManager:
     def __init__(self):
-        self.workspace_root = os.path.abspath(EOF_WORKSPACE_ROOT)
+        self.workspace_root = os.path.abspath(WORKSPACE_ROOT)
+        if not os.path.exists(self.workspace_root):
+            os.makedirs(self.workspace_root)
 
     def _safe_path(self, path):
         abs_path = os.path.abspath(os.path.join(self.workspace_root, path))
-        if not abs_path.startswith(self.workspace_root):
+        # FIXED: Use commonpath to avoid sibling-directory bug
+        if os.path.commonpath([abs_path, self.workspace_root]) != self.workspace_root:
             raise PermissionError(f"Access denied: {path} is outside the workspace root.")
         return abs_path
 

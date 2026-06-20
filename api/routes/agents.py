@@ -11,18 +11,23 @@ class AgentTaskRequest(BaseModel):
 class SwarmRequest(BaseModel):
     goal: str
 
+_manager = None
 def get_agent_manager():
-    return AgentManager()
+    global _manager
+    if _manager is None:
+        _manager = AgentManager()
+    return _manager
 
 @router.post("/task")
 async def run_agent_task(request: AgentTaskRequest):
     manager = get_agent_manager()
-    result = manager.run_task(request.agent_type, request.prompt)
+    # FIXED: Added await
+    result = await manager.run_task(request.agent_type, request.prompt)
     return {"status": "success", "result": result}
 
 @router.post("/swarm")
 async def run_swarm(request: SwarmRequest):
     manager = get_agent_manager()
-    # Assuming run_swarm might be async or needs to be handled as such
-    result = manager.run_swarm(request.goal)
+    # FIXED: Added await
+    result = await manager.run_swarm(request.goal)
     return {"status": "success", "result": result}

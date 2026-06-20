@@ -24,7 +24,9 @@ class PCControl:
         pyautogui.write(text, interval=0.1)
         return "Text typed."
 
-    def press_shortcut(self, *keys):
+    def press_shortcut(self, *keys, confirm=False):
+        # FIXED: Added confirmation gate
+        if not confirm: return "Permission denied."
         self._log_action("press_shortcut", {"keys": keys})
         pyautogui.hotkey(*keys)
         return "Keys pressed."
