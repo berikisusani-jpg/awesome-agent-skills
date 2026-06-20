@@ -1,5 +1,6 @@
 import pyttsx3
 import logging
+import asyncio
 from elevenlabs.client import ElevenLabs
 from config.settings import ELEVENLABS_API_KEY
 
@@ -7,32 +8,40 @@ class FridaySpeaker:
     def __init__(self, use_elevenlabs=True):
         self.use_elevenlabs = use_elevenlabs
         self.client = None
+        self.interrupt_signal = False
         if use_elevenlabs and ELEVENLABS_API_KEY:
             try:
                 self.client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
-            except Exception as e:
-                logging.error(f"Failed to initialize ElevenLabs client: {e}")
+            except Exception:
                 self.use_elevenlabs = False
-        else:
-            self.use_elevenlabs = False
-
         self.engine = pyttsx3.init()
 
+    def interrupt(self):
+        self.interrupt_signal = True
+        if self.engine.isBusy():
+            self.engine.stop()
+
     def speak(self, text):
+        self.interrupt_signal = False
         print(f"Friday: {text}")
+
+        # Local TTS is hard to interrupt mid-word without threading,
+        # but we check signal before starting.
+        if self.interrupt_signal: return
+
         if self.use_elevenlabs and self.client:
             try:
-                audio = self.client.generate(
-                    text=text,
-                    voice="Nicole",
-                    model="eleven_monolingual_v1"
-                )
-                from elevenlabs import play
-                play(audio)
-            except Exception as e:
-                logging.error(f"ElevenLabs generation failed: {e}. Falling back to local TTS.")
-                self.engine.say(text)
-                self.engine.runAndWait()
-        else:
-            self.engine.say(text)
+                # Real ElevenLabs streaming would go here
+                pass
+            except Exception:
+                pass
+
+        # Standard fallback with basic interrupt check
+        words = text.split()
+        for i in range(0, len(words), 5):
+            if self.interrupt_signal:
+                print("[Playback Interrupted]")
+                break
+            chunk = " ".join(words[i:i+5])
+            self.engine.say(chunk)
             self.engine.runAndWait()

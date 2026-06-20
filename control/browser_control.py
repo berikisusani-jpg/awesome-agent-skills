@@ -1,6 +1,9 @@
 from playwright.async_api import async_playwright
 import asyncio
 import time
+import datetime
+import os
+from config.settings import WORKSPACE_ROOT
 
 class BrowserControl:
     def __init__(self):
@@ -14,6 +17,15 @@ class BrowserControl:
         with open(self.audit_log, "a") as f:
             f.write(f"{time.ctime()} | Action: {action} | Params: {params}\n")
 
+    async def _get_screenshot_receipt(self):
+        shot_path = os.path.join(WORKSPACE_ROOT, f"browser_receipt_{int(time.time())}.png")
+        await self.page.screenshot(path=shot_path)
+        return {
+            "type": "screenshot",
+            "data": shot_path,
+            "timestamp": datetime.datetime.now().isoformat()
+        }
+
     async def start(self, headless=False):
         self._log_action("start_browser", {"headless": headless})
         self.playwright = await async_playwright().start()
@@ -25,29 +37,32 @@ class BrowserControl:
         if not self.page: await self.start()
         self._log_action("navigate", {"url": url})
         await self.page.goto(url)
-        return f"Navigated to {url}"
+        return {
+            "status": "success",
+            "message": f"Navigated to {url}",
+            "receipt": await self._get_screenshot_receipt()
+        }
 
     async def click_element(self, selector, confirm=False):
-        if not confirm: return "Permission denied."
+        if not confirm: return {"status": "error", "message": "Permission denied."}
         self._log_action("click_element", {"selector": selector})
         await self.page.click(selector)
-        return f"Clicked {selector}"
+        return {
+            "status": "success",
+            "message": f"Clicked {selector}",
+            "receipt": await self._get_screenshot_receipt()
+        }
 
     async def type_text(self, selector, text, confirm=False):
-        if not confirm: return "Permission denied."
+        if not confirm: return {"status": "error", "message": "Permission denied."}
         self._log_action("type_text", {"selector": selector, "text": text})
         await self.page.fill(selector, text)
-        return f"Typed into {selector}"
-
-    async def extract_page_text(self):
-        return await self.page.inner_text("body")
-
-    async def take_screenshot(self, path="browser_shot.png"):
-        await self.page.screenshot(path=path)
-        return path
+        return {
+            "status": "success",
+            "message": f"Typed into {selector}",
+            "receipt": await self._get_screenshot_receipt()
+        }
 
     async def close(self):
-        if self.browser:
-            await self.browser.close()
-        if self.playwright:
-            await self.playwright.stop()
+        if self.browser: await self.browser.close()
+        if self.playwright: await self.playwright.stop()

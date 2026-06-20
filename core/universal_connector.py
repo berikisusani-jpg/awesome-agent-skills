@@ -1,46 +1,41 @@
 import asyncio
 import logging
+import inspect
 from integrations.registry import UniversalRegistry
-from integrations.gmail_integration import GmailIntegration
-from integrations.calendar_integration import CalendarIntegration
-from integrations.spotify_integration import SpotifyIntegration
-from integrations.weather import WeatherIntegration
-from integrations.smart_home import SmartHomeIntegration
+from integrations.base import BaseIntegration
+import pkgutil
+import importlib
+import os
 
 class UniversalConnector:
     def __init__(self):
         self.registry = UniversalRegistry()
-        self.integrations = {
-            "Gmail": GmailIntegration(),
-            "Calendar": CalendarIntegration(),
-            "Spotify": SpotifyIntegration(),
-            "Weather": WeatherIntegration(),
-            "HomeAssistant": SmartHomeIntegration()
-        }
+        self.integrations = {}
+        self._discover_plugins()
+
+    def _discover_plugins(self):
+        """Automatically discovers and loads all BaseIntegration plugins in the integrations/ directory."""
+        import integrations
+        path = os.path.dirname(integrations.__file__)
+        for loader, module_name, is_pkg in pkgutil.iter_modules([path]):
+            if module_name in ['base', 'registry']: continue
+            module = importlib.import_module(f"integrations.{module_name}")
+            for name, obj in inspect.getmembers(module):
+                if inspect.isclass(obj) and issubclass(obj, BaseIntegration) and obj is not BaseIntegration:
+                    instance = obj()
+                    self.integrations[instance.name] = instance
+        logging.info(f"Discovered {len(self.integrations)} integration plugins.")
 
     async def execute_action(self, service_name, action, params=None):
-        print(f"Friday: Executing '{action}' on {service_name}...")
+        print(f"Friday: Dispatching '{action}' to {service_name}...")
 
         if service_name in self.integrations:
             integration = self.integrations[service_name]
-            method = getattr(integration, action, None)
-            if method:
-                try:
-                    if asyncio.iscoroutinefunction(method):
-                        return await method(**(params or {}))
-                    else:
-                        return method(**(params or {}))
-                except Exception as e:
-                    logging.error(f"Error executing {action} on {service_name}: {e}")
-                    return {"status": "error", "message": str(e)}
-            else:
-                return {"status": "error", "message": f"Action {action} not found on {service_name}"}
+            return await integration.execute(action, params)
 
-        # Honest stub for unimplemented services
-        logging.warning(f"Access attempted to unimplemented service: {service_name}")
         return {
             "status": "not_implemented",
-            "message": f"Integration for {service_name} is in the registry but not yet functionally wired."
+            "message": f"Integration for {service_name} not found or not implemented as a plugin."
         }
 
     async def close_all(self):

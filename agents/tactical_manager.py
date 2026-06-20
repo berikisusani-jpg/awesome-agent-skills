@@ -1,9 +1,11 @@
 import asyncio
 from agents.agent_manager import AgentManager
+from core.memory import FridayMemory
 
 class TacticalManager:
     def __init__(self):
         self.manager = AgentManager()
+        self.memory = FridayMemory()
         self.tactical_state = "standby"
         self.communication_log = []
 
@@ -11,7 +13,6 @@ class TacticalManager:
         self.tactical_state = "active"
         print(f"Friday: Initiating Tactical Strike on goal: {target_goal}")
 
-        # FIXED: run_task is now async, so we can use gather correctly
         tasks = [
             self.manager.run_task("research", f"High-priority intel on {target_goal}"),
             self.manager.run_task("coding", f"Develop tactical tools for {target_goal}"),
@@ -19,6 +20,11 @@ class TacticalManager:
         ]
 
         results = await asyncio.gather(*tasks)
+
+        # FIXED: Neural Cross-Pollination
+        # Store tactical results as shared 'wisdom' for future agents
+        for res in results:
+            self.memory.store_conversation("tactical_agent", str(res))
 
         self.communication_log.append({"goal": target_goal, "results": results})
         self.tactical_state = "complete"
