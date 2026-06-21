@@ -13,13 +13,14 @@ FridayBrain instantiated successfully
 ## 2. Integrity & Real Functionality
 - **Memory Deletion:** **IMPLEMENTED.** `api/routes/memory.py` now performs real deletion from the Supabase `memories` table using the SDK.
 - **Gmail Integration:** **IMPLEMENTED.** `GmailIntegration` refactored to inherit from `BaseIntegration`. It is now automatically discovered and fully functional for the `inbox_triage` skill.
-- **Dependency Management:** **FIXED.** A comprehensive `requirements.txt` with pinned versions has been generated and cross-checked against all imports (`spotipy`, `httpx`, etc. included).
+- **Dependency Management:** **FIXED.** Generated a validated `requirements.txt` with pinned versions. Resolved installation conflicts between `httpx`, `supabase`, and `openai`. Fixed `openai-whisper` installation by pinning `setuptools<81` and using `--no-build-isolation`.
 
 ## 3. Infrastructure & Observability
-- **Logging:** **HARDENED.** Implemented centralized structured JSON logging. Audit logs for `ActionLedger`, `PCControl`, and `BrowserControl` are now routed through the `FridayAudit` and `FridayControl` loggers rather than ad-hoc file writes.
+- **Logging:** **HARDENED.** Implemented centralized structured JSON logging. Audit logs for `ActionLedger`, `PCControl`, and `BrowserControl` are now routed through the `FridayAudit` and `FridayControl` loggers.
 - **API Health:** **OPERATIONAL.** Added `/healthz` and `/readyz` endpoints. The readiness check performs a real connectivity test to Supabase.
 - **Rate Limiting:** **IMPLEMENTED.** The chat endpoint is limited to 10 requests per minute via `slowapi`.
 - **Sync State:** **FIXED.** The REST API and WebSocket now share a single `FridayBrain` singleton to ensure conversation history consistency.
+- **Dockerization:** **FIXED.** Updated `Dockerfile` to handle complex dependency builds in a two-step process (setuptools/wheel first).
 
 ## 4. Security & Safety
 - **Ethical Sentinel:** **WIRED.** All actions queued in the `ActionLedger` are now screened by the Sentinel. Actions flagged as non-aligned (e.g., "delete") are automatically escalated to "critical" risk level, forcing manual approval.

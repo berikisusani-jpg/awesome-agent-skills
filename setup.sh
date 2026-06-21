@@ -21,7 +21,14 @@ fi
 echo "Initializing Workspace..."
 mkdir -p friday_workspace
 
-echo "Starting Docker stack..."
-docker-compose up --build -d
-
-echo "FRIDAY is coming online. Access the API at http://localhost:8000"
+# Local install option for non-docker environments
+if [ "$1" == "--local" ]; then
+    echo "Installing dependencies locally..."
+    pip install --upgrade pip "setuptools<81" wheel
+    pip install --no-build-isolation -r requirements.txt
+    python3 main.py
+else
+    echo "Starting Docker stack..."
+    docker-compose up --build -d
+    echo "FRIDAY is coming online. Access the API at http://localhost:8000"
+fi

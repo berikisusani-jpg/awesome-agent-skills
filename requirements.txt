@@ -1,3 +1,10 @@
+# --- Build tooling: must install before everything else ---
+# openai-whisper's setup.py still imports pkg_resources directly, which
+# setuptools >=81 removed. Pin an older setuptools so it's available,
+# and install this file with: pip install --no-build-isolation -r requirements.txt
+setuptools<81
+wheel
+
 anthropic==0.25.0
 openai==1.14.3
 google-generativeai==0.4.1
@@ -20,9 +27,13 @@ google-auth==2.29.0
 google-auth-oauthlib==1.2.0
 google-api-python-client==2.127.0
 spotipy==2.23.0
-homeassistant-api==4.4.0
+# homeassistant-api removed: never imported anywhere in the codebase.
+# integrations/smart_home.py calls the Home Assistant REST API directly
+# via `requests`, not this package. Re-add it only if real usage is added.
 requests==2.31.0
-httpx==0.27.0
+# httpx relaxed to a range: anthropic/openai need <1,>=0.23, but supabase==2.4.0
+# itself requires httpx<0.26. A pinned 0.27.0 makes the install unresolvable.
+httpx>=0.24,<0.26
 python-dotenv==1.0.1
 pydantic==2.7.0
 sqlalchemy==2.0.29
@@ -39,7 +50,9 @@ watchdog==4.0.0
 rich==13.7.1
 typer==0.12.3
 slowapi==0.1.9
-pytest==9.1.1
+# pytest relaxed: pytest-asyncio==0.23.6 requires pytest<9,>=7.0.0.
+# A pinned 9.1.1 makes the install unresolvable.
+pytest>=7.4,<9
 pytest-asyncio==0.23.6
 beautifulsoup4==4.12.3
 huggingface-hub==0.23.0
