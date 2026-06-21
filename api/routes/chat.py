@@ -1,8 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 from typing import Optional
 from core.brain import FridayBrain
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
+limiter = Limiter(key_func=get_remote_address)
 router = APIRouter()
 
 class ChatRequest(BaseModel):
@@ -18,7 +21,8 @@ def get_brain():
     return _brain
 
 @router.post("/chat")
-async def chat(request: ChatRequest):
+@limiter.limit("10/minute")
+async def chat(request: ChatRequest, req: Request):
     try:
         brain = get_brain()
         responses = []

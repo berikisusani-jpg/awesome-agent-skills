@@ -34,3 +34,9 @@ LOG_FILE = "friday.log"
 WORKSPACE_ROOT = os.path.join(os.getcwd(), "friday_workspace")
 if not os.path.exists(WORKSPACE_ROOT):
     os.makedirs(WORKSPACE_ROOT)
+
+# Power Levels (Autonomy Profiles)
+# GUEST: Everything requires approval.
+# STANDARD: Read-only auto-approves, destructive requires approval.
+# POWER: PC/Browser auto-approves, file deletion requires approval.
+AUTONOMY_PROFILE = get_env_var("AUTONOMY_PROFILE", "GUEST")

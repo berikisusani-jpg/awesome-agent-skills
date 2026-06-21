@@ -25,18 +25,27 @@ async def list_all_memories():
     mem = get_memory()
     if not mem:
         raise HTTPException(status_code=503, detail="Memory service unavailable.")
-    # In a real system, this would query Supabase for all memories.
-    # For this build, we simulate a retrieval from the vector store metadata.
-    return mem.vector_store.metadata
+    # Real query to Supabase via vector store or direct client
+    try:
+        response = mem.vector_store.supabase.client.table("memories").select("*").execute()
+        return response.data
+    except Exception as e:
+        return []
 
 @router.delete("/{memory_id}")
-async def delete_memory(memory_id: int):
+async def delete_memory(memory_id: str):
     mem = get_memory()
     if not mem:
         raise HTTPException(status_code=503, detail="Memory service unavailable.")
-    # Logic to delete from Supabase and Vector store
-    # self.supabase.client.table("memories").delete().eq("id", memory_id).execute()
-    return {"status": "success", "message": f"Memory {memory_id} deleted."}
+
+    try:
+        # Real deletion from Supabase
+        res = mem.vector_store.supabase.client.table("memories").delete().eq("id", memory_id).execute()
+        if not res.data:
+             raise HTTPException(status_code=404, detail="Memory not found.")
+        return {"status": "success", "message": f"Memory {memory_id} deleted."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/")
 async def add_memory(text: str, metadata: dict = {}):

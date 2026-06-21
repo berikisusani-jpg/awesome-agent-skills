@@ -4,6 +4,7 @@ import time
 import datetime
 import os
 from config.settings import WORKSPACE_ROOT
+from core.ledger import get_ledger
 
 class BrowserControl:
     def __init__(self):
@@ -12,10 +13,14 @@ class BrowserControl:
         self.context = None
         self.page = None
         self.audit_log = "browser_control_audit.log"
+        self.ledger = get_ledger()
 
     def _log_action(self, action, params):
-        with open(self.audit_log, "a") as f:
-            f.write(f"{time.ctime()} | Action: {action} | Params: {params}\n")
+        logging.getLogger("FridayControl").info({
+            "component": "BrowserControl",
+            "action": action,
+            "params": params
+        })
 
     async def _get_screenshot_receipt(self):
         shot_path = os.path.join(WORKSPACE_ROOT, f"browser_receipt_{int(time.time())}.png")
@@ -26,6 +31,12 @@ class BrowserControl:
             "timestamp": datetime.datetime.now().isoformat()
         }
 
+    async def _gate(self, action, params, risk_level="medium"):
+        action_id = self.ledger.queue_action("BrowserControl", action, params, risk_level=risk_level)
+        if await self.ledger.wait_for_approval(action_id):
+            return True
+        return False
+
     async def start(self, headless=False):
         self._log_action("start_browser", {"headless": headless})
         self.playwright = await async_playwright().start()
@@ -35,6 +46,8 @@ class BrowserControl:
 
     async def navigate(self, url):
         if not self.page: await self.start()
+        if not await self._gate("navigate", {"url": url}, risk_level="low"):
+            return {"status": "error", "message": "Action rejected by user."}
         self._log_action("navigate", {"url": url})
         await self.page.goto(url)
         return {
@@ -43,8 +56,9 @@ class BrowserControl:
             "receipt": await self._get_screenshot_receipt()
         }
 
-    async def click_element(self, selector, confirm=False):
-        if not confirm: return {"status": "error", "message": "Permission denied."}
+    async def click_element(self, selector):
+        if not await self._gate("click_element", {"selector": selector}):
+            return {"status": "error", "message": "Action rejected by user."}
         self._log_action("click_element", {"selector": selector})
         await self.page.click(selector)
         return {
@@ -53,8 +67,9 @@ class BrowserControl:
             "receipt": await self._get_screenshot_receipt()
         }
 
-    async def type_text(self, selector, text, confirm=False):
-        if not confirm: return {"status": "error", "message": "Permission denied."}
+    async def type_text(self, selector, text):
+        if not await self._gate("type_text", {"selector": selector, "text": text}):
+            return {"status": "error", "message": "Action rejected by user."}
         self._log_action("type_text", {"selector": selector, "text": text})
         await self.page.fill(selector, text)
         return {

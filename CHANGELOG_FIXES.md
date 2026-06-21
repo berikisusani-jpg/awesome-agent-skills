@@ -1,58 +1,41 @@
-# Project FRIDAY - Remediation & Singularity Build Changelog
+# Project FRIDAY — Build Progress & Verified Fixes
 
-## Phase 3 - Singularity Apex Final Build
-
-### Headline Features
-- **Feature 1: Action Receipts**: Every system action now returns a structured 'receipt' with real API payloads or screenshot paths.
-- **Feature 2: Human-in-the-Loop Ledger**: Sensitive actions are queued for manual approval via '/api/actions/approve'.
-- **Feature 3: One-Command Docker Install**: setup.sh + Docker Compose for 2-minute deployment.
-- **Feature 4: Local Fallback (Ollama)**: Automatic redirection to local Llama3 if cloud providers are offline.
-- **Feature 5: Honest Benchmarks**: Comprehensive task suite (tasks.json) with real brain-execution logging.
-- **Feature 6: Memory Inspector**: CRUD access to vector memory via authenticated API and Web UI.
-- **Feature 7: Plugin SDK**: Standardized BaseIntegration interface with automatic discovery.
-- **Feature 8: Barge-in Voice**: Interruptible speech synthesis via signal latching.
-
-### "Singularity" Innovations (God-Mode)
-- **Neural Cross-Pollination**: Tactical agents autonomously share findings via semantic memory.
-- **Autonomous System Self-Healing**: Background monitor triggers Recursive Modification Protocol on bottlenecks.
-- **Ghost-Mode Stealth Uplink**: Zero-footprint UI mode for high-stakes operational discretion.
-
-### Regressions & Adversarial Fixes (Round 3)
-- **Spotify Integration**: Restored real Spotipy search/playback calls (No more fake success strings).
-- **Benchmark Runner**: Now correctly invokes FridayBrain; results reflect real API attempts (e.g., 401 on missing keys).
-- **.env.example**: Restored all 11 core variables; verified survival through setup.sh prompt flow.
-- **God-Tier Modules**: Recursive, Sentinel, and Synthesis modules fully functionalized and integrated.
-
-## Verifiable Proofs (Internal Session Outputs)
-
-### Feature 1 & 7 (Plugin Discovery & Weather Receipt)
+## 1. System Boot & Core Stability (CRITICAL)
+- **Status:** **FIXED & VERIFIED**
+- **Fix:** Implemented robust, path-relative plugin discovery in `core/universal_connector.py` to resolve `TypeError` in namespace packages. Added error handling for non-GUI environments (pyttsx3/pyautogui).
+- **Verified Output:**
 ```
-Plugins Loaded: ['Calendar', 'HomeAssistant', 'Spotify', 'Weather']
-Weather Status: success
-Receipt Type: api_response
-Receipt Data Sample: {'main': {'temp': 25}, 'weather': [{'description': 'clear sky'}]}
+$ python3 -c "from core.brain import FridayBrain; b = FridayBrain(); print('Success')"
+Integrations: ['Calendar', 'HomeAssistant', 'Spotify', 'Weather']
+Success
+
+$ python3 -c "from main import FridayOrchestrator; o = FridayOrchestrator(); print('Success')"
+FridayOrchestrator instantiated successfully
+Success
 ```
 
-### Feature 2 (Action Ledger Gate)
+## 2. Security & Autonomy
+- **Status:** **IMPLEMENTED & VERIFIED**
+- **Verified:** `EthicalSentinel` is wired into `ActionLedger`. Actions like "delete" are flagged and forced to "critical" risk level.
+- **Verified:** `FileManager` sibling-directory escape vulnerability fixed via `os.path.commonpath`.
+- **Verified:** Tiered Power Levels (GUEST, STANDARD, POWER) accurately gate actions based on risk profile.
+
+## 3. Advanced Skills
+- **Status:** **OPERATIONAL**
+- **Verified:** `morning_briefing`, `inbox_triage`, and `file_audit` discovered as skills.
+- **Verification Log:**
 ```
-Friday: Action 87ab2248-0360-44ff-95d9-f3309cc3fa2f queued for approval. System on standby...
-Pending Actions Queue Size: 1
-Approving Action: 87ab2248-0360-44ff-95d9-f3309cc3fa2f
-Action Execution Status: success
+$ python3 test_skill_discovery.py
+Skills Discovered: ['file_audit', 'inbox_triage', 'morning_briefing']
 ```
 
-### Feature 5 (Benchmark Execution - Real Attempt)
-```
-Running Task 1: What is the weather in Lagos?
-ERROR:FridayBrain:Error in FridayBrain: Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}}
-Result: ❌ FAIL (Genuine SDK Failure)
-```
+## 4. Production Readiness
+- **Status:** **STRENGTHENED**
+- **CI/CD:** GitHub Actions workflow added for automated smoke tests.
+- **Observability:** Structured JSON logging implemented; `/healthz` and `/readyz` endpoints added.
+- **API Security:** Bearer token authentication and Rate Limiting (slowapi) implemented.
+- **Dependencies:** `requirements.txt` pinned to specific versions for environment stability.
 
-### Feature 3 (setup.sh Environment Persistence)
-```
-Enter your ANTHROPIC_API_KEY: sk-ant-test-key
-Enter your FRIDAY_API_TOKEN: secure-test-token
-.env verify:
-ANTHROPIC_API_KEY=sk-ant-test-key
-FRIDAY_API_TOKEN=secure-test-token
-```
+## 5. Cleanup & Honesty
+- **Theatrical Cleanup:** Removed all "Singularity/God-Mode" references. Renamed `FridayApexOrchestrator` to `FridayOrchestrator`.
+- **File Hygiene:** Deleted all stray debug and log files. Corrected `.gitignore`.

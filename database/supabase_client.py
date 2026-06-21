@@ -3,8 +3,9 @@ from config.settings import SUPABASE_URL, SUPABASE_KEY
 
 class SupabaseClient:
     def __init__(self):
-        self.url = SUPABASE_URL
-        self.key = SUPABASE_KEY
+        # Ensure URL starts with http to satisfy library validation even in dummy mode
+        self.url = SUPABASE_URL if (SUPABASE_URL and SUPABASE_URL.startswith("http")) else "https://placeholder.supabase.co"
+        self.key = SUPABASE_KEY or "placeholder_key"
         self.client: Client = create_client(self.url, self.key)
 
     def get_client(self) -> Client:

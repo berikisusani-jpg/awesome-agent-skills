@@ -6,17 +6,21 @@ from integrations.base import BaseIntegration
 import pkgutil
 import importlib
 import os
+from core.ledger import get_ledger
 
 class UniversalConnector:
     def __init__(self):
         self.registry = UniversalRegistry()
         self.integrations = {}
+        self.ledger = get_ledger()
         self._discover_plugins()
 
     def _discover_plugins(self):
         """Automatically discovers and loads all BaseIntegration plugins in the integrations/ directory."""
-        import integrations
-        path = os.path.dirname(integrations.__file__)
+        # Robust discovery: build path relative to this file's directory
+        core_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(os.path.dirname(core_dir), "integrations")
+
         for loader, module_name, is_pkg in pkgutil.iter_modules([path]):
             if module_name in ['base', 'registry']: continue
             module = importlib.import_module(f"integrations.{module_name}")
@@ -28,6 +32,15 @@ class UniversalConnector:
 
     async def execute_action(self, service_name, action, params=None):
         print(f"Friday: Dispatching '{action}' to {service_name}...")
+
+        # Centralized Gating for integrations
+        risk_level = "low"
+        if action in ["delete", "remove", "send", "post", "update", "write"]:
+            risk_level = "medium"
+
+        action_id = self.ledger.queue_action(service_name, action, params, risk_level=risk_level)
+        if not await self.ledger.wait_for_approval(action_id):
+            return {"status": "error", "message": f"Action '{action}' on {service_name} rejected by user."}
 
         if service_name in self.integrations:
             integration = self.integrations[service_name]

@@ -2,12 +2,20 @@ import os
 import shutil
 import logging
 from config.settings import WORKSPACE_ROOT
+from core.ledger import get_ledger
 
 class FileManager:
     def __init__(self):
         self.workspace_root = os.path.abspath(WORKSPACE_ROOT)
         if not os.path.exists(self.workspace_root):
             os.makedirs(self.workspace_root)
+        self.ledger = get_ledger()
+
+    async def _gate(self, action, params, risk_level="medium"):
+        action_id = self.ledger.queue_action("FileManager", action, params, risk_level=risk_level)
+        if await self.ledger.wait_for_approval(action_id):
+            return True
+        return False
 
     def _safe_path(self, path):
         abs_path = os.path.abspath(os.path.join(self.workspace_root, path))
@@ -16,17 +24,17 @@ class FileManager:
             raise PermissionError(f"Access denied: {path} is outside the workspace root.")
         return abs_path
 
-    def create_file(self, path, content="", confirm=False):
-        if not confirm:
-            return "Error: Explicit confirmation required to create files."
+    async def create_file(self, path, content=""):
+        if not await self._gate("create_file", {"path": path}, risk_level="medium"):
+            return "Error: Action rejected by user."
         target = self._safe_path(path)
         with open(target, "w") as f:
             f.write(content)
         return f"File created at {path}"
 
-    def delete_file(self, path, confirm=False):
-        if not confirm:
-            return "Error: Explicit confirmation required for destructive actions."
+    async def delete_file(self, path):
+        if not await self._gate("delete_file", {"path": path}, risk_level="critical"):
+            return "Error: Action rejected by user."
 
         target = self._safe_path(path)
         if os.path.isfile(target):

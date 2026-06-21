@@ -7,19 +7,18 @@ class CinematicUXEngine:
         self.stealth_mode = False
 
     async def trigger_transition(self, mode_name):
-        print(f"Friday: Orchestrating cinematic transition to '{mode_name}'...")
-        await asyncio.sleep(0.8)
+        print(f"Friday: Transitioning to '{mode_name}' mode...")
+        await asyncio.sleep(0.5)
         return f"Transition to {mode_name} complete."
 
     def toggle_stealth_mode(self, enabled):
         """
-        FIXED: Ghost-Mode Stealth Uplink.
-        Minimizes system footprint while maintaining 100% responsiveness.
+        Reduces console output and UI animations.
         """
         self.stealth_mode = enabled
-        status = "ACTIVE" if enabled else "INACTIVE"
-        print(f"Friday: Ghost-Mode Stealth Uplink {status}. System zero-footprint engaged.")
+        status = "ON" if enabled else "OFF"
+        print(f"Friday: Stealth mode (reduced feedback) is now {status}.")
         return f"Stealth Mode: {status}"
 
     def apply_visual_feedback(self, intensity):
-        return f"Nexus Core Intensity set to {intensity * 100}%"
+        return f"UI feedback intensity set to {intensity * 100}%"

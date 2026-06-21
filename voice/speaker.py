@@ -11,10 +11,14 @@ class FridaySpeaker:
         self.interrupt_signal = False
         if use_elevenlabs and ELEVENLABS_API_KEY:
             try:
-                self.client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
+                self.client = ElevenLabs(api_key=ELEVENLABS_API_KEY, base_url="https://api.elevenlabs.io")
             except Exception:
                 self.use_elevenlabs = False
-        self.engine = pyttsx3.init()
+        try:
+            self.engine = pyttsx3.init()
+        except Exception as e:
+            logging.error(f"Failed to initialize pyttsx3: {e}")
+            self.engine = None
 
     def interrupt(self):
         self.interrupt_signal = True
@@ -37,11 +41,15 @@ class FridaySpeaker:
                 pass
 
         # Standard fallback with basic interrupt check
-        words = text.split()
-        for i in range(0, len(words), 5):
-            if self.interrupt_signal:
-                print("[Playback Interrupted]")
-                break
-            chunk = " ".join(words[i:i+5])
-            self.engine.say(chunk)
-            self.engine.runAndWait()
+        if self.engine:
+            words = text.split()
+            for i in range(0, len(words), 5):
+                if self.interrupt_signal:
+                    print("[Playback Interrupted]")
+                    break
+                chunk = " ".join(words[i:i+5])
+                self.engine.say(chunk)
+                self.engine.runAndWait()
+        else:
+            # If no engine, we just print (already done above)
+            pass
