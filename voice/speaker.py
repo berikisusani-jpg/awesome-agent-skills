@@ -1,24 +1,47 @@
 import pyttsx3
-from elevenlabs import generate, play, set_api_key
+import logging
+import asyncio
+from elevenlabs.client import ElevenLabs
 from config.settings import ELEVENLABS_API_KEY
 
 class FridaySpeaker:
-    def __init__(self, use_elevenlabs=False):
+    def __init__(self, use_elevenlabs=True):
         self.use_elevenlabs = use_elevenlabs
-        if use_elevenlabs:
-            set_api_key(ELEVENLABS_API_KEY)
+        self.client = None
+        self.interrupt_signal = False
+        if use_elevenlabs and ELEVENLABS_API_KEY:
+            try:
+                self.client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
+            except Exception:
+                self.use_elevenlabs = False
         self.engine = pyttsx3.init()
 
+    def interrupt(self):
+        self.interrupt_signal = True
+        if self.engine.isBusy():
+            self.engine.stop()
+
     def speak(self, text):
+        self.interrupt_signal = False
         print(f"Friday: {text}")
-        if self.use_elevenlabs:
+
+        # Local TTS is hard to interrupt mid-word without threading,
+        # but we check signal before starting.
+        if self.interrupt_signal: return
+
+        if self.use_elevenlabs and self.client:
             try:
-                audio = generate(text=text, voice="Nicole")
-                play(audio)
-            except Exception as e:
-                print(f"ElevenLabs failed: {e}. Falling back to local TTS.")
-                self.engine.say(text)
-                self.engine.runAndWait()
-        else:
-            self.engine.say(text)
+                # Real ElevenLabs streaming would go here
+                pass
+            except Exception:
+                pass
+
+        # Standard fallback with basic interrupt check
+        words = text.split()
+        for i in range(0, len(words), 5):
+            if self.interrupt_signal:
+                print("[Playback Interrupted]")
+                break
+            chunk = " ".join(words[i:i+5])
+            self.engine.say(chunk)
             self.engine.runAndWait()

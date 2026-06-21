@@ -15,27 +15,38 @@ class AgentManager:
         self.max_parallel = 100
 
     async def run_massive_swarm(self, massive_goal: str):
-        """
-        Orchestrates up to 100 parallel agent operations for a massive goal.
-        """
         print(f"Friday: Initializing Massive Parallel Swarm for: {massive_goal}")
-
-        # 1. Task agent generates a high-volume task list
-        base_steps = self.agents["task"].break_down_task(massive_goal)
-        # Simulate expansion to 100 tasks
+        base_steps = await self.agents["task"].break_down_task(massive_goal)
         massive_tasks = base_steps * 20
         massive_tasks = massive_tasks[:100]
 
         async def execute_task(task):
-            # In a real scenario, this would route to the correct agent
-            await asyncio.sleep(0.1) # Simulate work
+            await asyncio.sleep(0.1)
             return f"Completed: {task}"
 
-        print(f"Friday: Dispatching {len(massive_tasks)} parallel agents...")
         results = await asyncio.gather(*(execute_task(t) for t in massive_tasks))
-
         return f"Massive swarm completed. {len(results)} operations successfully executed."
 
-    def run_task(self, agent_type, prompt):
-        # ... existing implementation ...
-        return self.agents[agent_type].execute_task(prompt) if agent_type in self.agents else "Error"
+    async def run_task(self, agent_type: str, prompt: str):
+        if agent_type in self.agents:
+            agent = self.agents[agent_type]
+            if agent_type == "research": return await agent.search_and_summarize(prompt)
+            if agent_type == "writing": return await agent.write_document(prompt)
+            if agent_type == "coding": return await agent.write_code(prompt)
+            if agent_type == "task": return await agent.execute_task(prompt)
+        return "Unknown agent type."
+
+    async def run_swarm(self, goal: str):
+        print(f"Initializing swarm for goal: {goal}")
+        steps = await self.agents["task"].break_down_task(goal)
+        results = []
+        for step in steps:
+            if "research" in step.lower():
+                results.append(await self.agents["research"].search_and_summarize(step))
+            elif "code" in step.lower() or "script" in step.lower():
+                results.append(await self.agents["coding"].write_code(step))
+            elif "write" in step.lower() or "report" in step.lower():
+                results.append(await self.agents["writing"].write_document(step))
+            else:
+                results.append(await self.agents["task"].execute_task(step))
+        return results

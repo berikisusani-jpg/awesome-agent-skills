@@ -1,11 +1,33 @@
 __pycache__/
-*.pyc
-node_modules/
-dist/
-build/
-*.log
+*.py[cod]
+*$py.class
+.pytest_cache/
+.github/
+
+# Environments
 .env
 .venv
+env/
+venv/
+ENV/
+
+# Logs and databases
+*.log
+*.sqlite
+friday.log
+api_server.log
+
+# Project specific
+core_review/
+docs/_build/
+friday_workspace/
+!friday_workspace/.gitkeep
+
+# Media
 *.png
 *.wav
-verification/
+*.webp
+
+# OS specific
+.DS_Store
+Thumbs.db
