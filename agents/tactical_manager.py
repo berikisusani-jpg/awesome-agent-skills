@@ -1,28 +1,29 @@
 import asyncio
 from agents.agent_manager import AgentManager
+from core.memory import FridayMemory
 
 class TacticalManager:
     def __init__(self):
         self.manager = AgentManager()
+        self.memory = FridayMemory()
         self.tactical_state = "standby"
         self.communication_log = []
 
     async def execute_tactical_strike(self, target_goal):
-        """
-        Friday enters SWAT-Mode: Parallel, multi-threaded agent coordination.
-        """
         self.tactical_state = "active"
-        print(f"Friday: Initiating Tactical Strike on goal: {target_goal}")
+        logging.info(f"Initiating Tactical Strike on goal: {target_goal}")
 
-        # 1. Dispatch agents with strict tactical constraints
         tasks = [
             self.manager.run_task("research", f"High-priority intel on {target_goal}"),
             self.manager.run_task("coding", f"Develop tactical tools for {target_goal}"),
             self.manager.run_task("task", f"Orchestrate deployment sequence for {target_goal}")
         ]
 
-        # Execute in parallel
         results = await asyncio.gather(*tasks)
+
+        # Sharing tactical results to memory for cross-agent availability
+        for res in results:
+            self.memory.store_conversation("tactical_agent", str(res))
 
         self.communication_log.append({"goal": target_goal, "results": results})
         self.tactical_state = "complete"

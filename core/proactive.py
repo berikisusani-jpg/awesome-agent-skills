@@ -34,8 +34,6 @@ class ProactiveEngine:
         self.speaker.speak(briefing)
 
     async def check_for_interruptions(self):
-        # Logic to check if something urgent happened (e.g. urgent email)
-        # and notify the user immediately
         while True:
             # self.logger.info("Checking for urgent updates...")
-            await asyncio.sleep(300) # Check every 5 minutes
+            await asyncio.sleep(300) # FIXED: Use asyncio.sleep

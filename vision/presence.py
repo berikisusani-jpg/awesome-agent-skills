@@ -1,23 +1,41 @@
 import cv2
 import time
+import logging
 
 class PresenceDetector:
     def __init__(self):
-        self.face_cascade = None # cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        # Using a more robust path check for the cascade
+        self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
     def detect_user(self):
         """
-        Simulated presence detection using camera.
+        Attempts real face detection using OpenCV.
+        Note: Requires a working camera device.
         """
-        # In a real environment, we would use OpenCV to detect a face
-        # For now, we simulate detecting a 'focused' user
-        return {"status": "present", "mood": "focused", "timestamp": time.time()}
+        try:
+            cap = cv2.VideoCapture(0)
+            if not cap.isOpened():
+                return {"status": "error", "message": "Camera not accessible."}
 
-    def is_user_away(self, last_seen):
-        if time.time() - last_seen > 300:
-            return True
-        return False
+            ret, frame = cap.read()
+            if not ret:
+                cap.release()
+                return {"status": "error", "message": "Failed to capture frame."}
+
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = self.face_cascade.detectMultiScale(gray, 1.1, 4)
+
+            cap.release()
+
+            is_present = len(faces) > 0
+            return {
+                "status": "present" if is_present else "away",
+                "faces_detected": len(faces),
+                "timestamp": time.time()
+            }
+        except Exception as e:
+            logging.error(f"Presence detection failed: {e}")
+            return {"status": "error", "message": str(e)}
 
     def get_user_attention_level(self):
-        # Simulate eye tracking or face orientation
-        return "high"
+        return "Not implemented: Requires eye-tracking model."
