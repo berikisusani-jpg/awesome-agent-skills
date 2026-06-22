@@ -30,3 +30,10 @@ FridayBrain instantiated successfully
 ## 5. Documentation & Cleanup
 - **Theatrical Cleanup:** Renamed `FridayApexOrchestrator` to `FridayOrchestrator`. Removed all references to "Singularity" or "God-Mode" in code and documentation.
 - **Honesty Pass:** Updated `README.md` with an accurate feature status table. Created `docs/LIMITATIONS.md` to document the single-user, local-process boundaries of the current architecture.
+
+## 6. Developer Suite (Round 6)
+- **Deep Research:** **OPERATIONAL.** `deep_research` skill performing real HTTP fetches and extracting text from at least 3 sources (verified on 'Python SDKs for AI').
+- **Code Tutor:** **OPERATIONAL.** `code_tutor` skill providing line-grounded explanations (verified against `core/ledger.py`).
+- **Project Scaffolder:** **OPERATIONAL.** `CodingOrchestrator` generating multi-file Python projects with syntax validation and one fix retry loop (verified on calculator project).
+- **Marketing Content:** **OPERATIONAL.** `marketing_content` skill providing labeled AI drafts and competitive research integration.
+- **VS Code Extension:** **IMPLEMENTED.** Minimal TypeScript extension in `apps/vscode/` providing 'Explain Selection' and 'Suggest Fix' commands via the Friday API.

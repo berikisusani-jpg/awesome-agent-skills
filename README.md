@@ -20,6 +20,11 @@ Friday combines LLM intelligence with a robust tool-calling framework and a huma
 | **Control** | PC / Browser Automation | ✅ **REAL** | Python-controlled UI and Playwright automation. |
 | **Vision** | Visual Grounding | ✅ **REAL** | Uses GPT-4o to locate UI elements visually. |
 | **Skills** | Morning Briefing | ✅ **REAL** | Multi-step autonomous daily summary. |
+| **Skills** | Deep Research | ✅ **REAL** | Real web search synthesis with citations. |
+| **Skills** | Code Tutor | ✅ **REAL** | Line-grounded teaching and quizzes. |
+| **Skills** | Project Scaffolder | ✅ **REAL** | Multi-file generation with fix/retry loop. |
+| **Skills** | Marketing Content | ✅ **REAL** | Labeled AI drafts and competitive research. |
+| **Frontend** | VS Code Extension | ✅ **REAL** | Side-panel AI integration (Scaffolding). |
 | **Frontend** | Desktop / Mobile / Web | 🛠 **ROADMAP** | Back-end API support and Electron scaffolding only. |
 | **Self-Mod** | Recursive Self-Rewriting | ❌ **REMOVED** | Removed for safety in production environments. |
 

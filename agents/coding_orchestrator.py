@@ -18,7 +18,6 @@ class CodingOrchestrator:
         print(f"Friday: Building complex project - {description}")
         plan_text = await self.plan_project(description)
 
-        # Ensure target dir is safe
         from control.file_manager import FileManager
         fm = FileManager()
         try:
@@ -29,22 +28,33 @@ class CodingOrchestrator:
         if not os.path.exists(safe_target):
             os.makedirs(safe_target)
 
-        # Parse plan for filenames (very basic parser for this demo)
         import re
-        files = re.findall(r'[\w\.-]+\.py', plan_text)
-        if not files:
-            files = ["main.py"] # Fallback
+        # Find all .py, .md, .txt files in the plan
+        files = re.findall(r'[\w\./-]+\.(?:py|md|txt)', plan_text)
+        if not files: files = ["main.py"]
 
         results = []
         for file_name in set(files):
-            file_path = os.path.join(safe_target, file_name)
-            # Link each file build to the actual coder using the brain
-            code = await self.coder.write_code(f"Write the code for {file_name} based on this project plan: {plan_text}")
+            # Strip subdirectories for this simple scaffolds
+            base_name = os.path.basename(file_name)
+            file_path = os.path.join(safe_target, base_name)
+
+            code = await self.coder.write_code(f"Write ONLY the content for {base_name} based on this plan: {plan_text}")
+
+            # Syntax/Import check for python files
+            valid = True
+            if base_name.endswith(".py"):
+                try:
+                    compile(code, base_name, 'exec')
+                except Exception as e:
+                    print(f"Friday: Fix attempt for {base_name}...")
+                    code = await self.coder.write_code(f"FIX this python code, it has error {e}:\n{code}")
+
             with open(file_path, "w") as f:
                 f.write(code)
-            results.append(f"Generated {file_name}")
+            results.append(f"Generated {base_name}")
 
-        return f"Project build complete. Files written to {target_dir}: {', '.join(results)}"
+        return f"Project build complete. Files in {target_dir}: {', '.join(results)}"
 
     async def debug_complex_issue(self, error_log, code_snippet):
         return await self.coder.debug_code(f"Error: {error_log}\nCode: {code_snippet}")
