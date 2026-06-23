@@ -55,6 +55,10 @@ class ActionLedger:
         return action_id
 
     def _should_auto_approve(self, component, risk_level):
+        # STANDING CONSTITUTION: Physical-world and financial actions never auto-approve.
+        if component in ["Printer", "Printer3D", "Finance", "Commerce"]:
+            return False
+
         if self.profile == "GUEST": return False
 
         if self.profile == "STANDARD":
@@ -71,8 +75,22 @@ class ActionLedger:
         if self.pending_actions[action_id]["status"] == "approved":
             return True
 
+        # Voice-native action approval trigger
+        from voice.speaker import FridaySpeaker
+        from voice.listener import FridayListener
+        speaker = FridaySpeaker()
+        listener = FridayListener()
+
+        action = self.pending_actions[action_id]
+        msg = f"Sir, I have a pending {action['action']} action for {action['component']}. Should I proceed?"
+        speaker.speak(msg)
+
         print(f"Friday: Action {action_id} awaiting manual approval (Profile: {self.profile})...")
         start_time = datetime.datetime.now()
+
+        # Non-blocking voice check could be here, but we'll use a task for it
+        # For simplicity in this build, we check transcription in the loop
+
         while (datetime.datetime.now() - start_time).total_seconds() < timeout:
             if self.pending_actions[action_id]["status"] == "approved":
                 self._log_audit(self.pending_actions[action_id], approved_by="human")

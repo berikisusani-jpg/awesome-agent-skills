@@ -30,7 +30,7 @@ async def run_benchmark():
 
             # Heuristic for pass: either the system message or the presence of the tool name
             # We look for "Accessing [Tool]..." string which is emitted by our tool loop
-            if f"Accessing {t['expected_tool']}..." in transcript:
+            if f"Accessing {t['expected_tool']}..." in transcript or f"Executing Skill {t['expected_tool']}..." in transcript:
                 passed = True
             elif t['expected_tool'].lower() in transcript.lower():
                  # Slightly weaker check if system message was somehow missed but tool was discussed

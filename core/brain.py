@@ -10,6 +10,9 @@ from typing import List, Dict, Any, AsyncGenerator
 from config.settings import ANTHROPIC_API_KEY, GEMINI_API_KEY
 from config.friday_identity import get_system_prompt
 from core.gemini_brain import GeminiBrain
+from core.openai_brain import OpenAIBrain
+from core.glm_brain import GLMBrain
+from core.grok_brain import GrokBrain
 from core.local_brain import LocalBrain
 from integrations.registry import UniversalRegistry
 from core.universal_connector import UniversalConnector
@@ -20,6 +23,9 @@ class FridayBrain:
         self.provider = provider or os.getenv("BRAIN_PROVIDER", "claude")
         self.claude_client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
         self.gemini_brain = GeminiBrain(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
+        self.openai_brain = OpenAIBrain()
+        self.glm_brain = GLMBrain()
+        self.grok_brain = GrokBrain()
         self.local_brain = LocalBrain()
         self.claude_model = "claude-3-5-sonnet-20240620"
         self.registry = UniversalRegistry()
@@ -80,12 +86,30 @@ class FridayBrain:
 
     async def chat_stream(self, message: str, user_name: str = "User", force_provider=None) -> AsyncGenerator[str, None]:
         prov = force_provider or self.provider
+
+        # Simple task-type heuristic routing
+        if not force_provider:
+             if "code" in message.lower() or "debug" in message.lower():
+                  prov = "openai" # GPT-4o is strong for code
+             elif "research" in message.lower():
+                  prov = "claude" # Sonnet is strong for synthesis
+
         if prov == "ollama":
             async for chunk in self.local_brain.chat_stream(message): yield chunk
             return
         if (prov == "gemini" or len(message) > 5000) and self.gemini_brain:
             async for chunk in self.gemini_brain.chat_stream(message): yield chunk
             return
+        if prov == "openai" and self.openai_brain:
+            async for chunk in self.openai_brain.chat_stream(message): yield chunk
+            return
+        if prov == "glm" and self.glm_brain:
+            async for chunk in self.glm_brain.chat_stream(message): yield chunk
+            return
+        if prov == "grok" and self.grok_brain:
+            async for chunk in self.grok_brain.chat_stream(message): yield chunk
+            return
+
         if not ANTHROPIC_API_KEY:
             if await self.local_brain.available():
                 async for chunk in self.local_brain.chat_stream(message): yield chunk

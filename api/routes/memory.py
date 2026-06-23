@@ -62,3 +62,28 @@ async def search_memory(query: str):
         raise HTTPException(status_code=503, detail="Memory service unavailable.")
     results = mem.retrieve_relevant_memories(query)
     return {"results": results}
+
+@router.get("/export")
+async def export_memory():
+    mem = get_memory()
+    if not mem: raise HTTPException(status_code=503)
+    # Real logic: Query all from Supabase and return as JSON
+    try:
+        res = mem.vector_store.supabase.client.table("memories").select("*").execute()
+        return {"memories": res.data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/import")
+async def import_memory(data: dict):
+    mem = get_memory()
+    if not mem: raise HTTPException(status_code=503)
+    # Real logic: Bulk insert into Supabase
+    try:
+        memories = data.get("memories", [])
+        for m in memories:
+            m.pop("id", None) # Remove old IDs
+            mem.vector_store.supabase.client.table("memories").insert(m).execute()
+        return {"status": "success", "count": len(memories)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

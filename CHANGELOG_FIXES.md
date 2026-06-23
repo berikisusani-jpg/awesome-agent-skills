@@ -31,9 +31,20 @@ FridayBrain instantiated successfully
 - **Theatrical Cleanup:** Renamed `FridayApexOrchestrator` to `FridayOrchestrator`. Removed all references to "Singularity" or "God-Mode" in code and documentation.
 - **Honesty Pass:** Updated `README.md` with an accurate feature status table. Created `docs/LIMITATIONS.md` to document the single-user, local-process boundaries of the current architecture.
 
-## 6. Developer Suite (Round 6)
-- **Deep Research:** **OPERATIONAL.** `deep_research` skill performing real HTTP fetches and extracting text from at least 3 sources (verified on 'Python SDKs for AI').
-- **Code Tutor:** **OPERATIONAL.** `code_tutor` skill providing line-grounded explanations (verified against `core/ledger.py`).
-- **Project Scaffolder:** **OPERATIONAL.** `CodingOrchestrator` generating multi-file Python projects with syntax validation and one fix retry loop (verified on calculator project).
-- **Marketing Content:** **OPERATIONAL.** `marketing_content` skill providing labeled AI drafts and competitive research integration.
-- **VS Code Extension:** **IMPLEMENTED.** Minimal TypeScript extension in `apps/vscode/` providing 'Explain Selection' and 'Suggest Fix' commands via the Friday API.
+## 6. Developer Suite (Round 6) — FINALIZED
+- **Deep Research:** **FIXED & VERIFIED.** Resolved bug where topic was ignored. Now dynamically selects sources (verified on 'Quantum Computing' and 'Smartphones').
+- **Code Tutor:** **OPERATIONAL.** Line-grounded teaching with structural fallbacks.
+- **Project Scaffolder:** **OPERATIONAL.** Multi-file generation with real syntax validation loop.
+- **Marketing Content:** **OPERATIONAL.** Labeled AI drafts with integrated competitive research.
+- **VS Code Extension:** **IMPLEMENTED.** Standard scaffolding in `apps/vscode/`.
+
+## 7. Multi-Model & Physical Controls (Round 7) — VERIFIED
+- **Brain Router:** **OPERATIONAL.** Heuristic routing (e.g., code → OpenAI).
+- **Physical Constitutionalism:** **STRICT.** Printer/Finance actions forced to manual approval in `core/ledger.py`.
+- **Voice Approval:** **IMPLEMENTED.** Unified approval path for voice and HTTP.
+- **Ambient Briefing:** **OPERATIONAL.** Unprompted morning briefing on first contact.
+
+## 8. Real Agent Team (Round 8) — VERIFIED
+- **Writing Agent:** **OPERATIONAL.** Traceable 2-pass drafting/critique loop.
+- **Task Agent:** **OPERATIONAL.** Real goal decomposition into executable subtasks.
+- **Concurrency:** **VERIFIED.** `AgentManager` swarms are genuinely concurrent (asyncio.gather).

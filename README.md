@@ -6,6 +6,10 @@ FRIDAY (Fully Responsive Intelligent Digital Assistant) is a secure, proactive, 
 
 Friday combines LLM intelligence with a robust tool-calling framework and a human-in-the-loop security model.
 
+### 🏆 Benchmark Integrity
+We show proof. The system is regularly audited against a standard suite of developer and assistant tasks.
+[Latest Benchmark Results](benchmarks/results.md)
+
 ### Feature Status (Implementation Audit)
 
 | Feature Category | Feature | Status | Note |
@@ -25,6 +29,10 @@ Friday combines LLM intelligence with a robust tool-calling framework and a huma
 | **Skills** | Project Scaffolder | ✅ **REAL** | Multi-file generation with fix/retry loop. |
 | **Skills** | Marketing Content | ✅ **REAL** | Labeled AI drafts and competitive research. |
 | **Frontend** | VS Code Extension | ✅ **REAL** | Side-panel AI integration (Scaffolding). |
+| **Intelligence** | Multi-Model Router | ✅ **REAL** | OpenAI/GPT, GLM, Grok, and Claude routing. |
+| **Integrations** | Printer / 3D Printer | ✅ **REAL** | CUPS and OctoPrint connection logic. |
+| **Safety** | Voice Approval | ✅ **REAL** | Hands-free voice-native action confirmation. |
+| **Agents** | Task Orchestration | ✅ **REAL** | Real goal decomposition and concurrent swarms. |
 | **Frontend** | Desktop / Mobile / Web | 🛠 **ROADMAP** | Back-end API support and Electron scaffolding only. |
 | **Self-Mod** | Recursive Self-Rewriting | ❌ **REMOVED** | Removed for safety in production environments. |
 

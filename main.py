@@ -32,7 +32,15 @@ class FridayOrchestrator:
         from core.scheduler import get_scheduler
         await get_scheduler().start()
 
+        # Round 7D: Wake-on-first-contact ambient briefing
+        print("Friday: Ambient Briefing enabled. Waiting for first wake word...")
+
         await self.ux_engine.trigger_transition("Startup")
+
+        # Trigger Morning Briefing unprompted on startup/first wake
+        if "morning_briefing" in self.brain.skills:
+             briefing = await self.brain.skills["morning_briefing"].run(self.brain)
+             self.speaker.speak(briefing["message"])
 
         welcome = self.onboarding.get_welcome_message()
         reflection = self.monologue.reflect_on_interactions()

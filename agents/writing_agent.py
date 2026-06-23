@@ -2,11 +2,28 @@ import datetime
 import asyncio
 
 class WritingAgent:
+    def __init__(self, brain=None):
+        self.brain = brain
+
     async def write_document(self, content, style="professional"):
-        await asyncio.sleep(0.5)
-        if isinstance(content, dict):
-            return self.format_research_report(content)
-        return f"--- DOCUMENT START ---\nStyle: {style}\nDate: {datetime.date.today()}\n\n{content}\n--- DOCUMENT END ---"
+        if not self.brain: return "Brain not linked to Writing Agent."
+
+        # Real draft -> critique -> revise loop (max 2 passes)
+        draft = ""
+        prompt = f"Write a {style} document about: {content}"
+        async for chunk in self.brain.chat_stream(prompt): draft += chunk
+
+        # Pass 1: Critique
+        critique = ""
+        critique_prompt = f"Critique this draft for clarity and professional tone. Provide ONLY bullet points for improvement:\n\n{draft}"
+        async for chunk in self.brain.chat_stream(critique_prompt): critique += chunk
+
+        # Pass 2: Revise
+        revised = ""
+        revise_prompt = f"Rewrite the draft below based on this critique: {critique}\n\nDRAFT:\n{draft}"
+        async for chunk in self.brain.chat_stream(revise_prompt): revised += chunk
+
+        return revised
 
     def format_research_report(self, data):
         report = f"# FRIDAY RESEARCH REPORT: {data['topic'].upper()}\n"

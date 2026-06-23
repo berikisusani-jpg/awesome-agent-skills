@@ -1,0 +1,20 @@
+/app/core/gemini_brain.py:1: FutureWarning:
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+ERROR:FridayBrain:Error in FridayBrain: Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}, 'request_id': 'req_011CcK9LE82d8e2UAcr2ME66'}
+--- Round 10: Field Operations End-to-End Test ---
+Goal: Research Quantum Computing and print the summary to test.txt
+
+[Step 1: Swarm Execution]
+Initializing swarm for goal: Research Quantum Computing and print the summary to test.txt
+Coding Agent: Generating code for 'System error: Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}, 'request_id': 'req_011CcK9LE82d8e2UAcr2ME66'}'...
+
+[Step 2: Ledger Audit]
+
+--- Field Operations Test Complete ---

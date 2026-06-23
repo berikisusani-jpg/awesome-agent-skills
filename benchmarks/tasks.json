@@ -6,5 +6,7 @@
   {"id": 5, "task": "Turn on the living room lights", "expected_tool": "HomeAssistant"},
   {"id": 6, "task": "Summarize the file named main.py", "expected_tool": "FileManager"},
   {"id": 7, "task": "Write a python script that prints primes", "expected_tool": "CodingAgent"},
-  {"id": 8, "task": "Analyze the current screen state", "expected_tool": "ScreenAnalyzer"}
+  {"id": 8, "task": "Analyze the current screen state", "expected_tool": "ScreenAnalyzer"},
+  {"id": 9, "task": "Research the future of AI", "expected_tool": "deep_research"},
+  {"id": 10, "task": "Explain the code in main.py", "expected_tool": "code_tutor"}
 ]
