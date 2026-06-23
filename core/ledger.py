@@ -75,28 +75,54 @@ class ActionLedger:
         if self.pending_actions[action_id]["status"] == "approved":
             return True
 
-        # Voice-native action approval trigger
         from voice.speaker import FridaySpeaker
         from voice.listener import FridayListener
+        from voice.transcriber import FridayTranscriber
+
         speaker = FridaySpeaker()
         listener = FridayListener()
+        transcriber = FridayTranscriber()
 
         action = self.pending_actions[action_id]
-        msg = f"Sir, I have a pending {action['action']} action for {action['component']}. Should I proceed?"
-        speaker.speak(msg)
+        prompt = f"Sir, I have a pending {action['action']} action for {action['component']}. Should I proceed?"
+        speaker.speak(prompt)
 
         print(f"Friday: Action {action_id} awaiting manual approval (Profile: {self.profile})...")
         start_time = datetime.datetime.now()
 
-        # Non-blocking voice check could be here, but we'll use a task for it
-        # For simplicity in this build, we check transcription in the loop
-
+        retry_count = 0
         while (datetime.datetime.now() - start_time).total_seconds() < timeout:
+            # Check if approved externally (API)
             if self.pending_actions[action_id]["status"] == "approved":
                 self._log_audit(self.pending_actions[action_id], approved_by="human")
                 return True
             if self.pending_actions[action_id]["status"] == "rejected":
                 return False
+
+            # Real Voice Approval implementation
+            audio_path = await listener.listen()
+            if audio_path:
+                 text = transcriber.transcribe(audio_path).lower()
+                 print(f"Friday: Transcribed approval intent: '{text}'")
+
+                 if any(word in text for word in ["yes", "approve", "proceed", "go ahead", "do it"]):
+                      speaker.speak("Understood, Sir. Proceeding.")
+                      self.approve_action(action_id)
+                      self._log_audit(self.pending_actions[action_id], approved_by="voice")
+                      return True
+                 elif any(word in text for word in ["no", "stop", "reject", "cancel"]):
+                      speaker.speak("Action rejected.")
+                      self.reject_action(action_id)
+                      return False
+                 else:
+                      if retry_count == 0:
+                           speaker.speak("I'm sorry Sir, I didn't catch that. Should I proceed?")
+                           retry_count += 1
+                      else:
+                           speaker.speak("Still unclear. Action rejected.")
+                           self.reject_action(action_id)
+                           return False
+
             await asyncio.sleep(1)
         return False
 

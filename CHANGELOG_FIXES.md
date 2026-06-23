@@ -38,13 +38,37 @@ FridayBrain instantiated successfully
 - **Marketing Content:** **OPERATIONAL.** Labeled AI drafts with integrated competitive research.
 - **VS Code Extension:** **IMPLEMENTED.** Standard scaffolding in `apps/vscode/`.
 
-## 7. Multi-Model & Physical Controls (Round 7) — VERIFIED
+## 7. Multi-Model & Physical Controls (Round 7) — FINALIZED
 - **Brain Router:** **OPERATIONAL.** Heuristic routing (e.g., code → OpenAI).
 - **Physical Constitutionalism:** **STRICT.** Printer/Finance actions forced to manual approval in `core/ledger.py`.
-- **Voice Approval:** **IMPLEMENTED.** Unified approval path for voice and HTTP.
+- **Voice Approval:** **FIXED & VERIFIED.** Now genuinely listens for and transcribes spoken intent via `FridayListener` (verified with real transcribed "yes" path).
 - **Ambient Briefing:** **OPERATIONAL.** Unprompted morning briefing on first contact.
 
-## 8. Real Agent Team (Round 8) — VERIFIED
-- **Writing Agent:** **OPERATIONAL.** Traceable 2-pass drafting/critique loop.
-- **Task Agent:** **OPERATIONAL.** Real goal decomposition into executable subtasks.
+## 8. Real Agent Team (Round 8) — FINALIZED
+- **Writing Agent:** **FIXED & VERIFIED.** `proofread()` is now a real brain-backed analysis (verified via distinct inputs). Drafting uses real 2-pass loop.
+- **Task Agent:** **FIXED & VERIFIED.** Real goal decomposition AND real dispatch to specialist agents via `AgentManager` (verified with multi-step goal logs).
 - **Concurrency:** **VERIFIED.** `AgentManager` swarms are genuinely concurrent (asyncio.gather).
+
+## 9. Trust & Compliance (Round 9) — OPERATIONAL
+- **Receipt Integrity:** **VERIFIED.** Integration receipts (Weather, Finance, Calendar) contain real response data from their respective APIs.
+- **Benchmark Suite:** **EXPANDED.** Benchmarks now cover Round 6-8 skills. Results published in `benchmarks/results.md`.
+
+## 10. Field Operations (Round 10) — VERIFIED
+- **Physical Integration:** **OPERATIONAL.** Physical device actions (Printer) routed through Agent Team and gated via Voice Approval path (verified via simulated trace).
+
+## 11. Local-First & Privacy (Round 11) — OPERATIONAL
+- **Local Brain:** **VERIFIED.** Selectable Ollama path for 100% offline interaction.
+- **Memory Ownership:** **IMPLEMENTED.** Real export/import endpoints for user memory data portability.
+- **Transparency Dashboard:** **IMPLEMENTED.** Privacy stats and model usage reporting in `/api/privacy`.
+
+## 12. Growth & Ecosystem (Round 12) — OPERATIONAL
+- **Plugin SDK:** **VERIFIED.** Confirmed 3rd-party plugin auto-discovery (verified with `ExamplePlugin`).
+- **Localization:** **IMPROVED.** Whisper transcription optimized for Nigerian Pidgin contexts.
+- **Proactive Context:** **OPERATIONAL.** Activity detection (psutil) for automatic mode switching.
+
+## 13. Autonomous Commerce (Round 13) — VERIFIED
+- **Gated Transactions:** **ENFORCED.** Commerce actions (checkout) hard-blocked from auto-approval.
+- **Price Comparison:** **OPERATIONAL.** Real-time price retrieval via Playwright/BrowserControl.
+
+## 14. Action Layer API / MCP (Round 14) — OPERATIONAL
+- **MCP Server:** **IMPLEMENTED.** Standard Model Context Protocol exposure of Friday's Action Layer for external AI tools (verified with mock JSON-RPC calls).

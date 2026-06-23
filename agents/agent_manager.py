@@ -41,16 +41,25 @@ class AgentManager:
         print(f"Initializing swarm for goal: {goal}")
         steps = await self.agents["task"].break_down_task(goal)
 
-        async def handle_step(step):
-            if "research" in step.lower():
-                return await self.agents["research"].search_and_summarize(self.brain, step)
-            elif "code" in step.lower() or "script" in step.lower():
-                return await self.agents["coding"].write_code(step)
-            elif "write" in step.lower() or "report" in step.lower():
-                return await self.agents["writing"].write_document(step)
-            else:
-                return await self.agents["task"].execute_task(step)
-
         # Real concurrent execution
-        results = await asyncio.gather(*(handle_step(s) for s in steps))
+        results = await asyncio.gather(*(self.dispatch_step(s) for s in steps))
         return results
+
+    async def dispatch_step(self, step: str):
+        """
+        Intelligent routing for a single step.
+        """
+        lower_step = step.lower()
+        if "research" in lower_step:
+            return await self.agents["research"].search_and_summarize(self.brain, step)
+        elif "code" in lower_step or "script" in lower_step:
+            return await self.agents["coding"].write_code(step)
+        elif "write" in lower_step or "report" in lower_step:
+            return await self.agents["writing"].write_document(step)
+        elif "print" in lower_step:
+             return await self.brain.connector.execute_action("Printer", "print_file", {"file_path": step})
+
+        # Default to TaskAgent for further decomposition if needed,
+        # but avoid infinite recursion by checking depth or purpose
+        # Here we just run it as a simple action if no keyword matches
+        return await self.brain.connector.execute_action("Universal", "run", {"command": step})

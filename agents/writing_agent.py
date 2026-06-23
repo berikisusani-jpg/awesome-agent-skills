@@ -39,5 +39,15 @@ class WritingAgent:
         return report
 
     async def proofread(self, text):
-        await asyncio.sleep(0.2)
-        return "Deep analysis complete. Grammar and tone are optimal."
+        if not self.brain: return "Brain not linked to Writing Agent."
+
+        print("Friday: Proofreading content...")
+        prompt = (f"Act as a meticulous editor. Proofread the following text for grammar, punctuation, and professional tone. "
+                  f"Provide a clear, improved version. If the text is already optimal, say so.\n\n"
+                  f"TEXT:\n{text}")
+
+        result = ""
+        async for chunk in self.brain.chat_stream(prompt):
+            result += chunk
+
+        return result

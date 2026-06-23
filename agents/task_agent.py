@@ -24,11 +24,35 @@ class TaskAgent:
     async def execute_task(self, task):
         print(f"Friday: Executing complex task: {task}")
         steps = await self.break_down_task(task)
+
+        # Late import to avoid circular dependency
+        from agents.agent_manager import AgentManager
+        manager = AgentManager(brain=self.brain)
+
         results = []
         for i, step in enumerate(steps):
-            print(f"Step {i+1}: {step}")
-            # Real dispatch would happen here via agent_manager
-            # For this build, we simulate the autonomous loop
-            results.append({"step": step, "status": "completed"})
-            await asyncio.sleep(0.1)
-        return f"Autonomous execution of '{task}' complete. {len(steps)} steps processed."
+            print(f"Friday: Dispatching Step {i+1}: {step}")
+
+            # FIXED: Dispatch directly to dispatch_step to avoid redundant decomposition
+            res = await manager.dispatch_step(step)
+
+            # Determine status based on actual result structure
+            status = "success"
+            if isinstance(res, dict) and res.get("status") in ["error", "not_implemented"]:
+                status = "error"
+            elif res is None:
+                status = "error"
+
+            results.append({
+                "step_number": i + 1,
+                "step_description": step,
+                "status": status,
+                "result_data": res
+            })
+
+        return {
+            "task": task,
+            "total_steps": len(steps),
+            "execution_summary": f"Completed {len(results)} steps.",
+            "results": results
+        }

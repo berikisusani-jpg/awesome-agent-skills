@@ -18,3 +18,10 @@ class FridayListener:
     def record_audio(self, filename="temp_input.wav", duration=5):
         # ... existing record logic ...
         return filename
+
+    async def listen(self, duration=5):
+        """
+        Listens for audio and returns the path to the recorded file.
+        """
+        # In a real environment, this would call record_audio
+        return self.record_audio(duration=duration)

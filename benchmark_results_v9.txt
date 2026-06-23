@@ -1,0 +1,30 @@
+/app/core/gemini_brain.py:1: FutureWarning:
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+ERROR:FridayBrain:Error in FridayBrain: Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}, 'request_id': 'req_011CcKnEkw5LtqzF1xS7anT4'}
+ERROR:FridayBrain:Error in FridayBrain: Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}, 'request_id': 'req_011CcKnEms8TdMk1FHCTB82o'}
+ERROR:FridayBrain:Error in FridayBrain: Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}, 'request_id': 'req_011CcKnEnQNnpkEiuUPTjDep'}
+ERROR:FridayBrain:Error in FridayBrain: Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}, 'request_id': 'req_011CcKnEo4p2CSdyvmiGoEjh'}
+ERROR:FridayBrain:Error in FridayBrain: Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}, 'request_id': 'req_011CcKnEoStJ5mfNTMaeY9ND'}
+ERROR:FridayBrain:Error in FridayBrain: Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}, 'request_id': 'req_011CcKnEomj7PDCXJwmKpUht'}
+ERROR:FridayBrain:Error in FridayBrain: Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}, 'request_id': 'req_011CcKnEp55rUobpuPjdHzoF'}
+ERROR:FridayBrain:Error in FridayBrain: Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}, 'request_id': 'req_011CcKnEpNgzjKis7pbqWGYS'}
+ERROR:FridayBrain:Error in FridayBrain: Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}, 'request_id': 'req_011CcKnEpmzy5UbDUU7UEiCf'}
+Friday: Commencing Benchmark Run (10 tasks)...
+Running Task 1: What is the weather in Lagos?
+Running Task 2: Add a meeting for tomorrow at 2 PM
+Running Task 3: Search for latest AI news on Google
+Running Task 4: Play some focus music on Spotify
+Running Task 5: Turn on the living room lights
+Running Task 6: Summarize the file named main.py
+Running Task 7: Write a python script that prints primes
+Running Task 8: Analyze the current screen state
+Running Task 9: Research the future of AI
+Running Task 10: Explain the code in main.py
+Benchmark complete. Pass Rate: 0.0%. Results in benchmarks/results.md
