@@ -8,5 +8,8 @@
   {"id": 7, "task": "Write a python script that prints primes", "expected_tool": "CodingAgent"},
   {"id": 8, "task": "Analyze the current screen state", "expected_tool": "ScreenAnalyzer"},
   {"id": 9, "task": "Research the future of AI", "expected_tool": "deep_research"},
-  {"id": 10, "task": "Explain the code in main.py", "expected_tool": "code_tutor"}
+  {"id": 10, "task": "Explain the code in main.py", "expected_tool": "code_tutor"},
+  {"id": 11, "task": "Build a hello world project", "expected_tool": "CodingAgent"},
+  {"id": 12, "task": "Write a blog post about Friday", "expected_tool": "WritingAgent"},
+  {"id": 13, "task": "Research Quantum and write a report", "expected_tool": "TaskAgent"}
 ]
