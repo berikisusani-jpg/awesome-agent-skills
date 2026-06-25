@@ -36,7 +36,7 @@ async function callFriday(prompt: string) {
 
 	try {
 		const token = process.env.FRIDAY_API_TOKEN || "dev_token";
-		const response = await axios.post('http://localhost:8000/api/chat/chat', {
+		const response = await axios.post('http://localhost:8000/api/chat', {
 			message: prompt
 		}, {
 			headers: { 'Authorization': `Bearer ${token}` }

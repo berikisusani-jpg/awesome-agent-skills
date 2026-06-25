@@ -16,10 +16,8 @@ class DeepResearchSkill(BaseSkill):
     def _get_search_urls(self, query):
         """
         Dynamically derives search URLs based on the topic.
-        Simulates search by selecting topic-relevant authoritative sources.
+        Uses a hardcoded map for common topics and falls back to dynamic DDG scraping.
         """
-        # Mapping common developer topics to real, relevant URLs
-        # This ensures the output depends on the input while avoiding brittle scrapers
         topic_map = {
             "smartphone": [
                 "https://en.wikipedia.org/wiki/Smartphone",
@@ -53,6 +51,22 @@ class DeepResearchSkill(BaseSkill):
         for key, seed_urls in topic_map.items():
             if key in query_lower:
                 urls.extend(seed_urls)
+
+        if not urls:
+            # Fallback to DuckDuckGo HTML
+            try:
+                search_url = f"https://html.duckduckgo.com/html/?q={query.replace(' ', '+')}"
+                headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+                r = requests.get(search_url, headers=headers, timeout=10)
+                if r.status_code == 200:
+                    soup = BeautifulSoup(r.text, 'html.parser')
+                    links = soup.find_all('a', class_='result__url')
+                    for link in links[:3]:
+                        href = link.get('href')
+                        if href and href.startswith('http'):
+                            urls.append(href)
+            except Exception as e:
+                logging.error(f"DDG Fallback failed: {e}")
 
         return urls[:5]
 

@@ -46,7 +46,7 @@ FridayBrain instantiated successfully
 
 ## 8. Real Agent Team (Round 8) — FINALIZED
 - **Writing Agent:** **FIXED & VERIFIED.** `proofread()` is now a real brain-backed analysis (verified via distinct inputs). Drafting uses real 2-pass loop.
-- **Task Agent:** **FIXED & VERIFIED.** Resolved redundant decomposition and status labeling bugs. Now performs real dispatch to specialist agents via `manager.dispatch_step()` and returns structured per-step data (verified with multi-step goal logs).
+- **Task Agent:** **FIXED & VERIFIED.** Real goal decomposition AND real dispatch to specialist agents via `AgentManager` (verified with multi-step goal logs).
 - **Concurrency:** **VERIFIED.** `AgentManager` swarms are genuinely concurrent (asyncio.gather).
 
 ## 9. Trust & Compliance (Round 9) — OPERATIONAL

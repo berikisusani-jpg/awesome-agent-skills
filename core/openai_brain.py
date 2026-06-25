@@ -4,7 +4,9 @@ from config.settings import OPENAI_API_KEY
 
 class OpenAIBrain:
     def __init__(self, model="gpt-4o"):
-        self.client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+        self.client = None
+        if OPENAI_API_KEY:
+            self.client = AsyncOpenAI(api_key=OPENAI_API_KEY)
         self.model = model
 
     async def chat_stream(self, message: str):

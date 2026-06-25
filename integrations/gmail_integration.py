@@ -23,15 +23,6 @@ class GmailIntegration(BaseIntegration):
         if action == "get_unread_emails":
             results = self.service.users().messages().list(userId='me', q='is:unread').execute()
             messages = results.get('messages', [])
-            return {
-                "status": "success",
-                "message": f"Found {len(messages)} unread emails.",
-                "receipt": {
-                    "type": "gmail_receipt",
-                    "count": len(messages),
-                    "data": messages,
-                    "timestamp": datetime.datetime.now().isoformat()
-                }
-            }
+            return {"status": "success", "message": f"Found {len(messages)} unread emails.", "data": messages}
 
         return {"status": "not_implemented", "message": f"Action {action} not supported."}

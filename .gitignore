@@ -7,6 +7,8 @@ action_ledger_audit.log
 pc_control_audit.log
 browser_control_audit.log
 *.png
+*.log
+*.txt
 friday_workspace/
 node_modules/
 dist/
