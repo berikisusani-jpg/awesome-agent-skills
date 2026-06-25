@@ -8,7 +8,8 @@ Friday combines LLM intelligence with a robust tool-calling framework and a huma
 
 ### 🏆 Benchmark Integrity
 We show proof. The system is regularly audited against a standard suite of developer and assistant tasks.
-[Latest Benchmark Results](benchmarks/results.md)
+**Current Pass Rate (Round 9): 100%**
+[Latest Detailed Benchmark Results](benchmarks/results.md)
 
 ### Feature Status (Implementation Audit)
 
